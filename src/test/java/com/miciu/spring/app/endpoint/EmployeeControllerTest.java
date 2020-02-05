@@ -10,8 +10,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.io.IOException;
 import java.util.Arrays;
 
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -42,6 +44,16 @@ public class EmployeeControllerTest {
   }
 
   @Test
+  void should_return_empty_list_of_employees() throws Exception {
+    Employee givenEmployee = new Employee("Jan", "Kowalski", 45);
+    when(employeeService.readEmployeesFromJson()).thenThrow(new IOException());
+
+    mockMvc.perform(get("/employee")).andExpect(status().isOk())
+            .andExpect(jsonPath("$").isArray())
+            .andExpect(jsonPath("$").isEmpty());
+  }
+
+  @Test
   void should_add_employee() throws Exception {
     mockMvc.perform(post("/employee")
         .content("{\"firstName\": \"Jan\", \"lastName\": \"Testowy\", \"age\": \"54\"}")
@@ -49,14 +61,33 @@ public class EmployeeControllerTest {
         .andExpect(status().isOk());
   }
 
+  /**
+   * This case handle annotation @Size without annotation @NotNull on properties in object
+   * @throws Exception
+   */
   @Test
-  void should_fail_validation_when_empty_employee_is_added() throws Exception {
+  void should_fail_validation_when_empty_employee_is_added_with_keys() throws Exception {
     mockMvc.perform(post("/employee")
-        .content("{}")
+        .content("{\"firstName\": \"\", \"lastName\": \"\", \"age\": \"\"}}")
         .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.firstName", is("firstName is mandatory")))
         .andExpect(jsonPath("$.lastName", is("lastName is mandatory")))
         .andExpect(jsonPath("$.age", is("the minimum age is 18 years")));
+  }
+
+  /**
+   * This case handle @Size annotation without @NonNull annotations
+   * @throws Exception
+   */
+  @Test
+  void should_fail_validation_when_empty_employee_is_added() throws Exception {
+    mockMvc.perform(post("/employee")
+            .content("{}")
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.firstName", is("firstName is mandatory")))
+            .andExpect(jsonPath("$.lastName", is("lastName is mandatory")))
+            .andExpect(jsonPath("$.age", is("the minimum age is 18 years")));
   }
 }
