@@ -14,9 +14,9 @@ import java.util.List;
 
 import static java.nio.file.Files.readAllBytes;
 import static java.nio.file.Paths.get;
-@Service
+//@Service
 //@Qualifier
-@Profile("prod")
+//@Profile("prod")
 public class EmployeeServiceImpl implements EmployeeService{
 
   @Value("classpath:/data/employees.json")

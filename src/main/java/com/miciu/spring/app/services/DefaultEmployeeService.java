@@ -13,8 +13,8 @@ import java.util.List;
 
 
 @PropertySource("classpath:application.properties")
-@Service
-@Profile("local")
+//@Service
+//@Profile("local")
 //@Qualifier("DefaultImpl")
 
 public class DefaultEmployeeService implements EmployeeService {

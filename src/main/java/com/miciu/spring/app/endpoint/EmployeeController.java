@@ -29,6 +29,8 @@ public class EmployeeController {
 
     @Autowired
     public EmployeeController(//@Qualifier("ServiceImpl")
+                             // @Qualifier("employeeServiceImpl")
+                              //@Qualifier("defaultEmployeeService")
                                           EmployeeService employeeService) {
         this.employeeService = employeeService;
     }
