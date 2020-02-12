@@ -1,0 +1,1 @@
+alter table employee add column profession varchar(50);
