@@ -1,22 +1,54 @@
 package com.miciu.spring.app.mapper;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.EnumHashBiMap;
 import com.miciu.spring.app.converter.ProfessionToSectorConverter;
 import com.miciu.spring.app.model.Profession;
 import com.miciu.spring.app.model.Sector;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ProfessionToSectorConverterTest {
     private ProfessionToSectorConverter testObject;
+    private BiMap<Profession, Sector> map;
 
-    @Before
+    @BeforeEach
     public void before() {
         testObject = new ProfessionToSectorConverter();
+        map = EnumHashBiMap.create(Profession.class);
+        map.put(Profession.NURSE, Sector.HEALTH);
+        map.put(Profession.BANKER, Sector.FINANCE);
+        map.put(Profession.BUS_DRIVER, Sector.TRANSPORTATION);
+        map.put(Profession.SOLIDER, Sector.MILITARY);
     }
 
-    @Test
+
+    @ParameterizedTest
+    @EnumSource(Sector.class)
+    public void should_convert_sector_to_profession(Sector sector) {
+        //given
+        Profession profession = null;
+        //when
+        profession = testObject.convertFrom(sector, null, null);
+        //then
+        assertThat(profession).isEqualTo(map.inverse().get(sector));
+    }
+
+    @ParameterizedTest
+    @EnumSource(Profession.class) // six numbers
+    public void should_convert_profession_to_sector(Profession profession) {
+        //given
+        Sector sector = null;
+        //when
+        sector = testObject.convertTo(profession, null, null);
+        //then
+        assertThat(sector).isEqualTo(map.get(profession));
+    }
+
+    /*@Test
     public void should_map_health_to_nurse() {
         //given
         Sector sector = Sector.HEALTH;
@@ -102,5 +134,5 @@ public class ProfessionToSectorConverterTest {
         sector = testObject.convertTo(profession, null, null);
         //then
         assertThat(sector).isEqualTo(Sector.MILITARY);
-    }
+    }*/
 }

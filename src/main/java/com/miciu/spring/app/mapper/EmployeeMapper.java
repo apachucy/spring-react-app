@@ -32,31 +32,30 @@ public class EmployeeMapper {
     public static class Configurer {
 
         public static void configure(final MapperFactory mapperFactory) {
-            mapperFactory.getConverterFactory().registerConverter("professionToSectorConverter",new ProfessionToSectorConverter());
+            mapperFactory.getConverterFactory().registerConverter(new ProfessionToSectorConverter());
             mapperFactory.classMap(EmployeeEntity.class, EmployeeDto.class)
 
                     .customize(new CustomMapper<EmployeeEntity, EmployeeDto>() {
                         @Override
                         public void mapAtoB(EmployeeEntity employeeEntity, EmployeeDto employeeDto, MappingContext context) {
+                            super.mapAtoB(employeeEntity, employeeDto, context);
                             Calendar calendar = Calendar.getInstance();
                             int currentYear = calendar.get(Calendar.YEAR);
-                            employeeDto.setFirstName(employeeEntity.getFirstName());
-                            employeeDto.setLastName(employeeEntity.getLastName());
                             employeeDto.setAge(currentYear - employeeEntity.getBirthYear());
-                            //super.mapAtoB(employeeEntity, employeeDto, context);
+
                         }
 
                         @Override
                         public void mapBtoA(EmployeeDto employeeDto, EmployeeEntity employeeEntity, MappingContext context) {
+                            super.mapBtoA(employeeDto, employeeEntity, context);
                             Calendar calendar = Calendar.getInstance();
                             int currentYear = calendar.get(Calendar.YEAR);
                             employeeEntity.setBirthYear(currentYear - employeeDto.getAge());
-                            employeeEntity.setFirstName(employeeDto.getFirstName());
-                            employeeEntity.setLastName(employeeDto.getLastName());
 
-                            //  super.mapBtoA(employeeDto, employeeEntity, context);
                         }
-                    }).fieldMap("profession","sector").converter("professionToSectorConverter").add()
+                    }).fieldMap("profession", "sector").add()
+                    .field("firstName", "firstName").byDefault()
+                    .field("lastName", "lastName").byDefault()
                     .register();
 
         }

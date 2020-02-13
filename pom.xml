@@ -53,6 +53,12 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-params</artifactId>
+			<version>5.4.2</version>
+			<scope>test</scope>
+		</dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
@@ -81,6 +87,11 @@
             <artifactId>orika-core</artifactId>
             <version>1.5.4</version>
         </dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>28.2-jre</version>
+		</dependency>
 	</dependencies>
 
 	<dependencyManagement>
@@ -92,6 +103,7 @@
 				<scope>import</scope>
 				<type>pom</type>
 			</dependency>
+
 		</dependencies>
 	</dependencyManagement>
 

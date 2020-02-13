@@ -1,5 +1,7 @@
 package com.miciu.spring.app.converter;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.EnumHashBiMap;
 import com.miciu.spring.app.model.Profession;
 import com.miciu.spring.app.model.Sector;
 import ma.glasnost.orika.MappingContext;
@@ -8,37 +10,24 @@ import ma.glasnost.orika.metadata.Type;
 
 public class ProfessionToSectorConverter extends BidirectionalConverter<Profession, Sector> {
 
+    private BiMap<Profession, Sector> map;
+
+    public ProfessionToSectorConverter() {
+        map = EnumHashBiMap.create(Profession.class);
+        map.put(Profession.NURSE, Sector.HEALTH);
+        map.put(Profession.BANKER, Sector.FINANCE);
+        map.put(Profession.BUS_DRIVER, Sector.TRANSPORTATION);
+        map.put(Profession.SOLIDER, Sector.MILITARY);
+    }
+
 
     @Override
     public Sector convertTo(Profession profession, Type<Sector> type, MappingContext mappingContext) {
-        switch (profession) {
-            case NURSE:
-                return Sector.HEALTH;
-            case BANKER:
-                return Sector.FINANCE;
-            case BUS_DRIVER:
-                return Sector.TRANSPORTATION;
-            case SOLIDER:
-                return Sector.MILITARY;
-            default:
-                return Sector.FINANCE;
-        }
+        return map.get(profession);
     }
 
     @Override
     public Profession convertFrom(Sector sector, Type<Profession> type, MappingContext mappingContext) {
-        switch (sector) {
-            case HEALTH:
-                return Profession.NURSE;
-            case FINANCE:
-                return Profession.BANKER;
-            case TRANSPORTATION:
-                return Profession.BUS_DRIVER;
-            case MILITARY:
-                return Profession.SOLIDER;
-            default:
-                return Profession.BANKER;
-
-        }
+        return map.inverse().get(sector);
     }
 }
