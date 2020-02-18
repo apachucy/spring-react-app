@@ -5,18 +5,24 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.User;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-  
-  @Override
-  protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-   
-  }
+    private static final String NO_PASSWORD_ENCODING = "{noop}";
 
-  @Override
-  public void configure(WebSecurity web) {
-   
-  }
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+
+        User.UserBuilder users = User.builder();
+        auth.inMemoryAuthentication()
+                .withUser(users.username("admin").password(NO_PASSWORD_ENCODING + "admin").roles("ADMIN"))
+                .withUser(users.username("users").password(NO_PASSWORD_ENCODING + "users").roles("USERS"));
+    }
+
+    @Override
+    public void configure(WebSecurity web) {
+        web.ignoring().antMatchers("/employee");
+    }
 }
