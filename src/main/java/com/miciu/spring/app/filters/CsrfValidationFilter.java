@@ -48,6 +48,9 @@ public class CsrfValidationFilter implements Filter {
                 removeCsrfCookie(response);
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 response.getWriter().println(INVALID_CSRF_TOKEN_MSG);
+            }else{
+                //Is ok - call next filter for more validation
+                filterChain.doFilter(request, response);
             }
         } else {
             filterChain.doFilter(request, response);
