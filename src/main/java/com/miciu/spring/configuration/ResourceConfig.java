@@ -14,14 +14,14 @@ import static org.springframework.http.HttpMethod.PUT;
 @EnableResourceServer
 public class ResourceConfig extends ResourceServerConfigurerAdapter {
 
-  @Override
-  public void configure(HttpSecurity http) throws Exception {
-    http.antMatcher("/api/**/*").authorizeRequests()
-        //TODO secure path: /api
-        .antMatchers(GET, "/api/**/*").permitAll()
-        .antMatchers(POST, "/api/**/*").permitAll()
-        .antMatchers(PUT, "/api/**/*").permitAll()
-        .anyRequest()
-        .authenticated();
-  }
+    @Override
+    public void configure(HttpSecurity http) throws Exception {
+        http.antMatcher("/api/**/*").authorizeRequests()
+                //TODO secure path: /api
+                .antMatchers(GET, "/api/**/*").access("#oauth2.hasScope('read')")//.permitAll()
+                .antMatchers(POST, "/api/**/*").access("#oauth2.hasScope('write')")//.permitAll()
+                .antMatchers(PUT, "/api/**/*").access("#oauth2.hasScope('write')")//.permitAll()
+                .anyRequest()
+                .authenticated();
+    }
 }
